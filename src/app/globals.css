@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+/* =========================================================
+   DESIGN TOKENS — the single source of truth.
+   Change a value here and the whole site updates.
+   Colors / sizes are estimated from the screenshots:
+   confirm against the original with DevTools when polishing.
+   ========================================================= */
+
+/* Responsive tokens (values that change per screen size) */
+:root {
+  --section-y: 4rem; /* vertical gap between sections */
+  --gutter: 0.9375rem; /* page side padding */
+}
+@media (min-width: 48rem) {
+  :root {
+    --section-y: 6rem;
+    --gutter: 2.5rem;
+  }
+}
+@media (min-width: 80rem) {
+  :root {
+    --gutter: 4.6875rem;
+  }
+}
+
+@theme {
+  /* ---- Breakpoints (Tailwind: sm: md: lg: xl:) ---- */
+  --breakpoint-sm: 30rem; /* 480 */
+  --breakpoint-md: 48rem; /* 768 */
+  --breakpoint-lg: 64rem; /* 1024 */
+  --breakpoint-xl: 80rem; /* 1280 */
+
+  /* ---- Colors ---- */
+  --color-brand: #e3ec6e; /* lime: buttons, active tab, icon circles */
+  --color-brand-hover: #d3de4f;
+  --color-brand-soft: #f3f7c9;
+  --color-ink: #0b0b0b; /* headings, nav */
+  --color-body: #27304a; /* paragraph text */
+  --color-muted: #8c8c8c; /* labels, placeholders */
+  --color-surface: #ffffff;
+  --color-surface-soft: #f4f1e8; /* feature card beige */
+  --color-field: #f3f3f3; /* input background */
+  --color-line: #e8e8e8; /* borders and dividers */
+  --color-dark: #1b1b1b; /* footer area */
+  --color-overlay: rgb(0 0 0 / 0.6);
+
+  /* ---- Typography ---- */
+  --font-sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(45px, 5.5vmax, 70px); /* H1 */
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 700;
+
+  --text-h2: clamp(36px, 5vmax, 52px); /* section headings */
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 1.6rem; /* card titles, sub-headings */
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 700;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.75rem;
+  --text-small--line-height: 1.4;
+
+  /* ---- Layout ---- */
+  --container-site: 90rem; /* 1440 outer, 1290 content with desktop gutters */
+  --container-form: 41rem;
+  --spacing-section: var(--section-y);
+  --spacing-gutter: var(--gutter);
+
+  /* ---- Radii ---- */
+  --radius-sheet: 3rem; /* white page sheet */
+  --radius-image: 1.5rem;
+  --radius-card: 1.5rem;
+  --radius-input: 1rem;
+
+  /* ---- Shadows ---- */
+  --shadow-header: 0 10px 30px rgb(0 0 0 / 0.08);
+
+  /* ---- Motion ---- */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 300ms;
+  --default-transition-timing-function: var(--ease-smooth);
+
+  --animate-fade-up: fade-up 0.6s var(--ease-smooth) both;
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-surface);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+}
+
+/* =========================================================
+   ANIMATIONS (only what utilities can't express)
+   Scroll reveal: used by <Reveal />
+   ========================================================= */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s var(--ease-smooth),
+    transform 0.6s var(--ease-smooth);
+  &[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PREMIUM UNDERLINE
+   Brand color - Animated two-line effect
+======================================== */
+
+/* Premium animated underline */
+
+.underline {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  --underline-gap: 35px;
+}
+
+.underline::before,
+.underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-brand);
+  transition: transform 0.55s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Initial underline */
+.underline::before {
+  transform: translateX(0);
+}
+
+/* Incoming underline */
+.underline::after {
+  transform: translateX(calc(-100% - var(--underline-gap)));
+}
+
+/* Hover: outgoing line moves right */
+.underline:hover::before {
+  transform: translateX(calc(100% + var(--underline-gap)));
+}
+
+/* Hover: incoming line enters from left */
+.underline:hover::after {
+  transform: translateX(0);
+}
+
+/* ========================================
+   LINK UNDERLINE
+   Simple black line from left to right
+======================================== */
+
+.link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background-color: #171717;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+}
+
+.arrow-entrance {
+  transition: transform 0.3s ease;
+}
+
+.group:hover .arrow-entrance {
+  animation: arrow-diagonal 0.65s ease-in-out infinite;
+}
+
+@keyframes arrow-diagonal {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+
+  45% {
+    transform: translate(8px, -8px);
+    opacity: 0;
+  }
+
+  46% {
+    transform: translate(-8px, 8px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .arrow-entrance {
+    animation: none;
+  }
+}
